@@ -1,0 +1,23 @@
+
+# Environnement virtuel
+env/
+
+# Variables d'environnement
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Données brutes
+data/raw/
+
+# Fichiers temporaires outputs
+outputs/tmp/
+outputs/logs/
+
