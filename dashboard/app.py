@@ -1,16 +1,17 @@
 # Version Python du dashboard interactif
 
-# Chargement des datasets enrichis
 import pandas as pd
 import streamlit as st
-from kpi import compute_kpis 
+import matplotlib.pyplot as plt
+from kpi import compute_kpis
 
+# ----------------------------------
 # Configuration de la page Streamlit
+# ----------------------------------
 st.set_page_config(page_title="Customer Behavior Dashboard", layout="wide")
 
 st.title("Customer Behavior Dashboard")
 
-# Ajout du bandeau d'introduction
 st.markdown("""
 ### 🎯 Objectif du Dashboard
 Analyser le comportement d’achat des clients en croisant :
@@ -19,83 +20,179 @@ Analyser le comportement d’achat des clients en croisant :
 - leurs habitudes de consommation.
 """)
 
-# --- Calcul des KPI à partir des fichiers scorés ---
+# ----------------------------------
+# Chargement des données scorées
+# ----------------------------------
+df_personality = pd.read_csv("../data/scored/marketing_campaign_scored.csv")
+df_reviews = pd.read_csv("../data/scored/customer_reviews_scored.csv")
+
+# ----------------------------------
+# Calcul des KPI
+# ----------------------------------
 kpis = compute_kpis(
     path_reviews="../data/scored/customer_reviews_scored.csv",
     path_personality="../data/scored/marketing_campaign_scored.csv",
     output_dir="../data/scored/"
 )
 
-
-# Extraction des KPI
 avg_spend = kpis["Average_Spend"]
 conversion_rate = kpis["Conversion_Rate"]
 recency_mean = kpis["Recency_Mean"]
 avg_purchases = kpis["Average_Purchases"]
 avg_sentiment = kpis["Average_Sentiment"]
 
-# Affichage des KPI (résultats globaux)
-# Mise en page des KPI sur le dashboard
+# ----------------------------------
+# Affichage des KPI
+# ----------------------------------
 with st.container():
-    st.header("Key Performance Indicators (KPIs)")
+    st.header("📌 Key Performance Indicators (KPIs)")
     col1, col2, col3, col4, col5 = st.columns(5)
-    with col1:
-        st.metric("Panier moyen", f"{avg_spend:.2f}")
-    with col2:
-        st.metric("Taux d’achat après avis positif", f"{conversion_rate:.2f}%")
 
-    with col3:
-        st.metric("Récence moyenne", f"{recency_mean:.2f} jours")
-    with col4:
-        st.metric("Nombre moyen d'achats par client", f"{avg_purchases:.2f}")
+    col1.metric("Panier moyen", f"{avg_spend:.2f}")
+    col2.metric("Taux d’achat après avis positif", f"{conversion_rate:.2f}%")
+    col3.metric("Récence moyenne", f"{recency_mean:.2f} jours")
+    col4.metric("Achats moyens / client", f"{avg_purchases:.2f}")
+    col5.metric("Satisfaction moyenne", f"{avg_sentiment:.2f}")
 
-    with col5:
-        st.metric("Score moyen de satisfaction client", f"{avg_sentiment:.2f}")
-
-
-# Ajout d'un séparateur visuel
-# Création des graphiques interactifs
 st.markdown("---")
 st.header("📊 Visualisations des comportements d’achat")
 
-# ----------------------------
-# 1. Panier moyen (Average Spend)
-# ----------------------------
-# Histogramme des dépenses totales 'Total_Spent' par client pour montre comment les clients se répartissent (certains dépensent peu, d’autres beaucoup).
-import matplotlib.pyplot as plt
-import pandas as pd
+# ==========================================================
+# 1. Panier moyen – Distribution des dépenses
+# ==========================================================
+st.subheader("🛒 Distribution des dépenses clients")
 
-plt.hist()
+fig1, ax1 = plt.subplots()
+ax1.hist(df_personality["Total_Spent"], bins=30)
+ax1.set_xlabel("Montant total dépensé")
+ax1.set_ylabel("Nombre de clients")
+ax1.set_title("Répartition des dépenses clients")
+
+st.pyplot(fig1)
+
+st.caption("➡️ Permet d’identifier les petits vs gros consommateurs.")
+
+# ==========================================================
+# 2. Taux d’achat après avis positif
+# ==========================================================
+st.subheader("⭐ Impact des avis positifs sur l’achat")
+
+conversion_df = (
+    df_reviews.groupby("Positive_Review")["Purchased"]
+    .mean()
+    .reset_index()
+)
+
+conversion_df["Positive_Review"] = conversion_df["Positive_Review"].map({
+    0: "Avis négatif / neutre",
+    1: "Avis positif"
+})
+
+fig2, ax2 = plt.subplots()
+ax2.bar(conversion_df["Positive_Review"], conversion_df["Purchased"] * 100)
+ax2.set_ylabel("Taux d'achat (%)")
+ax2.set_title("Taux d'achat selon le type d'avis")
+
+st.pyplot(fig2)
+
+st.caption("➡️ Montre l’influence directe des avis clients sur la conversion.")
+
+# ==========================================================
+# 3. Récence moyenne
+# ==========================================================
+st.subheader("⏱️ Récence des clients")
+
+fig3, ax3 = plt.subplots()
+ax3.hist(df_personality["Recency"], bins=30)
+ax3.set_xlabel("Nombre de jours depuis le dernier achat")
+ax3.set_ylabel("Nombre de clients")
+ax3.set_title("Distribution de la récence")
+
+st.pyplot(fig3)
+
+st.caption("➡️ Permet d’identifier les clients actifs vs inactifs.")
+
+# ==========================================================
+# 4. Nombre moyen d’achats par client
+# ==========================================================
+st.subheader("📦 Nombre d’achats par client")
+
+fig4, ax4 = plt.subplots()
+ax4.hist(df_personality["Total_Purchases"], bins=30)
+ax4.set_xlabel("Nombre total d'achats")
+ax4.set_ylabel("Nombre de clients")
+ax4.set_title("Distribution des achats clients")
+
+st.pyplot(fig4)
+
+st.caption("➡️ Met en évidence la fidélité et la récurrence d’achat.")
+
+# ==========================================================
+# 5. Score de satisfaction client
+# ==========================================================
+st.subheader("😊 Analyse du sentiment client")
+
+fig5, ax5 = plt.subplots()
+ax5.hist(df_reviews["Sentiment"], bins=30)
+ax5.set_xlabel("Score de sentiment")
+ax5.set_ylabel("Nombre d’avis")
+ax5.set_title("Distribution des sentiments clients")
+
+st.pyplot(fig5)
+
+st.caption("➡️ Permet de visualiser la perception globale des clients.")
+
+st.markdown("---")
+st.success("Dashboard opérationnel ✅")
+st.markdown("© 2026 - Tous droits réservés.")
 
 
- 
-# ----------------------------
-# 2. Taux d'achat après avis positif (Conversion Rate)
-# ----------------------------
-# Bar chart positif vs négatif pour montrer la différence de taux d’achat.
+# ==================================
+# Conclusion automatique
+# ==================================
+st.markdown("---")
+st.header("🧠 Synthèse & interprétation automatique")
 
+# Interprétation du panier moyen
+if avg_spend > 600:
+    spend_msg = "Les clients analysés présentent un panier moyen élevé, indiquant une forte valeur client."
+elif avg_spend > 300:
+    spend_msg = "Le panier moyen est modéré, laissant un potentiel de montée en gamme."
+else:
+    spend_msg = "Le panier moyen est faible, ce qui suggère un comportement d'achat occasionnel."
 
-# ----------------------------
-# 3. Récence moyenne (Recency)
-# ----------------------------
-# Histogramme des "Recency" pour montrer si les clients sont récents ou anciens.
-# Récence / Recency = nombre de jours depuis le dernier achat
-   
-   
-# ----------------------------
-# 4. Nombre moyen d'achats par client
-# ----------------------------
-# Histogramme des achats (Total_Purchases)
+# Interprétation de la récence
+if recency_mean < 30:
+    recency_msg = "Les clients sont globalement récents et actifs."
+elif recency_mean < 90:
+    recency_msg = "Les clients sont moyennement actifs."
+else:
+    recency_msg = "Une partie significative des clients semble inactive ou à risque de churn."
 
-    
-# ----------------------------
-# 5. Score moyen de satisfaction client
-# -----------------------------
-# Histogramme des sentiments pour montrer si les avis sont plutôt négatifs, neutres, positifs.
+# Interprétation du sentiment
+if avg_sentiment > 0.1:
+    sentiment_msg = "Les avis clients sont majoritairement positifs, traduisant une bonne satisfaction."
+elif avg_sentiment > -0.05:
+    sentiment_msg = "Les avis clients sont globalement neutres."
+else:
+    sentiment_msg = "Les avis clients révèlent une insatisfaction potentielle."
 
+# Interprétation du taux de conversion
+if conversion_rate > 50:
+    conversion_msg = "Les avis positifs ont un fort impact sur la décision d’achat."
+elif conversion_rate > 30:
+    conversion_msg = "Les avis influencent modérément les décisions d’achat."
+else:
+    conversion_msg = "Les avis semblent avoir un impact limité sur la conversion."
 
+# Message final
+st.success(f"""
+📌 **Principaux enseignements**
 
+- {spend_msg}
+- {recency_msg}
+- {sentiment_msg}
+- {conversion_msg}
 
-
-
-# Ajout des filtres interactifs
+👉 Ces résultats montrent que **les avis clients, combinés aux habitudes de consommation**, jouent un rôle clé dans les décisions d’achat.
+""")

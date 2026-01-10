@@ -8,13 +8,22 @@ import pandas as pd
 import numpy as np
 from textblob import TextBlob
 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_PROCESSED_DIR = os.path.join(BASE_DIR, "..", "data", "processed")
+DATA_SCORED_DIR = os.path.join(BASE_DIR, "..", "data", "scored")
+
+REVIEWS_PATH = os.path.join(DATA_PROCESSED_DIR, "customer_reviews_cleaned.csv")
+PERSONALITY_PATH = os.path.join(DATA_PROCESSED_DIR, "marketing_campaign_cleaned.csv")
+
 def compute_kpis(
-    path_reviews="../data/processed/customer_reviews_cleaned.csv",
-    path_personality="../data/processed/marketing_campaign_cleaned.csv",
-    output_dir="../data/scored/"
+    path_reviews=REVIEWS_PATH,
+    path_personality=PERSONALITY_PATH,
+    output_dir=DATA_SCORED_DIR
 ):
     """
-    Calcule les 5 KPI principaux, sauvegarde les résultats et le DataFrame enrichi.
+    Calcul des 5 KPI principaux, sauvegarde les résultats et le DataFrame enrichi.
     """
     # --- Création du répertoire de sortie si inexistant ---
     os.makedirs(output_dir, exist_ok=True)

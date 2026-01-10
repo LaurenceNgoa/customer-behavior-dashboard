@@ -76,7 +76,7 @@ source env/bin/activate
 pip install -r requirements.txt
 
 # 4. Lancer les scripts
-python
+python src/kpi.py
 
 # 5. Exécuter le dashboard
 streamlit run dashboard/app.py
