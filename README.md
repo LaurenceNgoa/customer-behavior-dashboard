@@ -51,19 +51,17 @@ Analyse des **profils clients** et de leurs **habitudes de consommation**.
 - `notebooks/` : exploration & feature engineering
 - `src/` : scripts de préparation
 - `app_streamlit.py` : application interactive (Streamlit)
-- `app_dash.py` : (optionnel) version Dash
-- `powerbi/` : exports Power BI / captures
-- `tableau/` : workbook / captures
+- `output/` : workbook / captures
 - 'main.py'  : Script principal qui orchestre les traitements
 
 ---
 
-## ⚙️ Installation (local)
+## ⚙️ Installation (en local)
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/<votre-utilisateur>/monitoring_dashboard.git
-cd monitoring_dashboard
+git clone https://github.com/<votre-nom-utilisateur>/customer-behaviour-dashboard.git
+cd customer-behaviour-dashboard
 
 # 2. Créer et activer un environnement virtuel
 python -m venv env
