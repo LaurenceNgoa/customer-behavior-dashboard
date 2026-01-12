@@ -53,7 +53,7 @@ Analyse des **profils clients** et de leurs **habitudes de consommation**.
 - `app_streamlit.py` : application interactive (Streamlit)
 - `output/` : workbook / captures
 - 'main.py'  : Script principal qui orchestre les traitements
-
+- 'runtime.txt' : Pour le déploiement 
 ---
 
 ## ⚙️ Installation (en local)
