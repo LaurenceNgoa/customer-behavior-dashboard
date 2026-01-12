@@ -2,6 +2,8 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-blue?style=for-the-badge)](https://customer-behavior-dashboard-jozpryk3why2cezsqcha6y.streamlit.app/)
 
+![Python](https://img.shields.io/badge/python-3.11.9-green)
+
 Une application Streamlit pour visualiser et analyser le comportement des clients.
 
 
@@ -25,7 +27,7 @@ L’objectif principal est de comprendre **comment les avis, les caractéristiqu
 ---
 
 ## 🧰 Outils et technologies utilisés
-- **Langage principal :** Python  
+- **Langage principal :** Python 3.11.9
 - **Librairies :** `pandas`, `numpy`, `seaborn`, `plotly`, `TextBlob`, `matplotlib` , `streamlit` 
 - **Visualisation :** `Streamlit` 
 - **Exploration des données :** `Jupyter Notebook`  
