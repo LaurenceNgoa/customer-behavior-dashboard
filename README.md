@@ -42,7 +42,7 @@ Analyse des **profils clients** et de leurs **habitudes de consommation**.
 
 ---
 
-## 🧱 Structure du projet**
+## 🧱 Structure du projet
 
 - `data/` : jeux de données bruts et nettoyés
   ── raw/                # Données sources
