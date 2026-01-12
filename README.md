@@ -1,5 +1,10 @@
 # 🧭 Customer Behavior Dashboard
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-blue?style=for-the-badge)](https://customer-behavior-dashboard-jozpryk3why2cezsqcha6y.streamlit.app/)
+
+Une application Streamlit pour visualiser et analyser le comportement des clients.
+
+
 **Dashboard de suivi du comportement d’achat des clients**, croisant leurs avis, leurs caractéristiques démographiques et leurs habitudes de consommation.
 
 ---
